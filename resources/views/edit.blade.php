@@ -1,44 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Add User</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-<body>
+@extends('layout')
+
+@section('content')
+
 <br>
 <div class="container mt-3">
-  <a href="/" class="btn btn-dark">Back</a>
-  <h2>Add User</h2>
-  <form id="editSave" action="/save-registration" method="POST">
+  <div>
+    <a href="/" class="btn btn-dark">Back</a>
+  </div>
+  <br>
+
+  @if (session('success'))
+    <p>
+      <div class="alert alert-success">
+        {{ session('success') }}
+      </div>
+    </p>
+  @endif
+
+  <div>
+    <h2>Edit User</h2>
+  </div>
+  <form id="editSave" action="/user-modify/{{ $user->id }}" class="was-validated" method="POST">
     @csrf
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="name">Name</label>
-        
-        <input type="text" class="form-control" id="inputName" name="inputName" placeholder="Name" value="{{ $user->name }}">
+
+    <div class="mb-3 mt-3 col-md-6">
+      <label for="inputName" class="form-label">Name:</label>
+      <input type="text" class="form-control" id="inputName" placeholder="Enter name" name="inputName" maxlength="255" value="{{ $user->name }}" required>
+      @if ($errors->has('inputName'))
+        <div class="validation-error">Field can't be empty. Please fill out this field.</div>
+      @endif
+    </div>
+    
+    <div class="mb-3 col-md-6">
+      <label for="inputAddress1" class="form-label">Existing Address:</label>
+      <input type="text" class="form-control" id="inputAddress" placeholder="Enter address" name="inputAddress" maxlength="255" value="{{ $user->address->address }}" required>
+      <input type="hidden" name="addressId" id="addressId" value="{{ $user->address->id }}">
+      @if ($errors->has('inputAddress'))
+        <div class="validation-error">Field can't be empty. Please fill out this field.</div>
+      @endif
+      <div>
+        <a href="/view-address/{{$user->id}}">View Existing addresses</a>
       </div>
     </div>
-    <div class="form-group col-md-6">
-      <label for="address1">Address</label>
-      <input type="text" class="form-control" id="inputAddress1" name="inputAddress1" placeholder="1234 Main St">
+
+    <div class="mb-3 col-md-6">
+      <label for="inputAddress1" class="form-label">New Address (optional)</label>
+      <input type="text" class="form-control border border-light" id="newAddress" placeholder="Enter address 2" name="newAddress" >
+      @if ($errors->has('newAddress'))
+        <div >Please fill out this field.</div>
+      @endif
     </div>
-    <div class="form-group col-md-6">
-      <label for="address2">Address 2</label>
-      <input type="text" class="form-control" id="inputAddress2" name="inputAddress2" placeholder="Apartment, studio, or floor">
+
+    <div class="mb-3 col-md-2">
+      <label for="inputAddress1" class="form-label">Contact No:</label>
+      <input type="text" class="form-control" id="contactNo" placeholder="+91" name="contactNo" maxlength="10" minlength="10" onkeypress="return /[0-9]/i.test(event.key)" value="{{ $user->contact }}" required>
+      @if ($errors->has('contactNo'))
+        <div class="validation-error">Field can't be empty. Please fill out this field.</div>
+      @endif
     </div>
-    <div class="form-row">
-      <div class="form-group col-md-2">
-        <label for="contactNo">Contact No</label>
-        <input type="text" class="form-control" id="contactNo" name="contactNo" placeholder="+91" value="{{ $user->contact }}">
-      </div>
-    </div>
-    <br>
-    <button type="submit" class="btn btn-primary">Register User</button>
+    
+    <button type="submit" class="btn btn-primary">Modify User</button>
   </form>
 </div>
 
-</body>
-</html>
+@endsection

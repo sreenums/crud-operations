@@ -1,51 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Add User</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-<body>
+@extends('layout')
+
+@section('content')
+
 <br>
 <div class="container mt-3">
-  <a href="/" class="btn btn-dark">Back</a>
+  <div>
+    <a href="/" class="btn btn-dark">Back</a>
+  </div>
+  <br>
+
   @if (session('success'))
-  <p>
-    <div class="alert alert-success">
-      {{ session('success') }}
-    </div>
-  </p>
+    <p>
+      <div class="alert alert-success">
+        {{ session('success') }}
+      </div>
+    </p>
   @endif
   
-  <h2>Add User</h2>
-  <form id="registrationForm" action="/submit-registration" method="POST">
+  <h2>Add New User</h2>
+
+  <form method="POST" id="registrationForm" class="was-validated" action="/submit-registration" >
     @csrf
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="name">Name</label>
-        <input type="text" class="form-control" id="inputName" name="inputName" placeholder="Name">
-      </div>
+
+    <div class="mb-3 mt-3 col-md-6">
+      <label for="inputName" class="form-label">Name:</label>
+      <input type="text" class="form-control" id="inputName" placeholder="Enter name" name="inputName" required>
+      @if ($errors->has('inputName'))
+        <div class="validation-error">Please fill out this field.</div>
+      @endif
     </div>
-    <div class="form-group col-md-6">
-      <label for="address1">Address</label>
-      <input type="text" class="form-control" id="inputAddress1" name="inputAddress1" placeholder="1234 Main St">
+
+    <div class="mb-3 col-md-6">
+      <label for="inputAddress1" class="form-label">Address 1:</label>
+      <input type="text" class="form-control" id="inputAddress1" placeholder="Enter address" name="inputAddress1" required>
+      @if ($errors->has('inputAddress1'))
+        <div class="validation-error">Please fill out this field.</div>
+      @endif
     </div>
-    <div class="form-group col-md-6">
-      <label for="address2">Address 2</label>
-      <input type="text" class="form-control" id="inputAddress2" name="inputAddress2" placeholder="Apartment, studio, or floor">
+
+    <div class="mb-3 col-md-6">
+      <label for="inputAddress1" class="form-label">Address 2 (optional):</label>
+      <input type="text" class="form-control" id="inputAddress2" placeholder="Enter address 2" name="inputAddress2" >
+      @if ($errors->has('inputAddress2'))
+        <div >Please fill out this field.</div>
+      @endif
     </div>
-    <div class="form-row">
-      <div class="form-group col-md-2">
-        <label for="contactNo">Contact No</label>
-        <input type="text" class="form-control" id="contactNo" name="contactNo" placeholder="+91 ">
-      </div>
+
+    <div class="mb-3 col-md-2">
+      <label for="inputAddress1" class="form-label">Contact No:</label>
+      <input type="text" class="form-control" id="contactNo" placeholder="+91" name="contactNo" maxlength="10" minlength="10" onkeypress="return /[0-9]/i.test(event.key)" required>
+      
+      @if ($errors->has('contactNo'))
+        <div class="validation-error">Please fill out this field.</div>
+      @endif
     </div>
-    <br>
-    <button type="submit" class="btn btn-primary">Register User</button>
+    
+  <button type="submit" class="btn btn-primary">Submit</button>
   </form>
+
 </div>
 
-</body>
-</html>
+@endsection
