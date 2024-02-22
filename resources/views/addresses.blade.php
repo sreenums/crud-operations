@@ -1,5 +1,7 @@
 @extends('layout')
 
+@section('title', 'View User Address')
+
 @section('content')
 
 <br>

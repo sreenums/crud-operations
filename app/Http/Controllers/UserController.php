@@ -1,15 +1,27 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Address;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    /*** Display a listing of the resource. */
+    public function index()
+    {
+        $users = User::latest()->with(['address'])->get();
+        return view('welcome', compact('users'));
+    }
+    
+    /*** Show the form for creating a new resource. */
+    public function create()
+    {
+        return view('registration');
+    }
 
-    public function addUser(Request $request)
+    /*** Store a newly created resource in storage. */
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'inputName' => 'required|string|max:255',
@@ -28,10 +40,10 @@ class UserController extends Controller
         $record->save();
         
         if($address1){
-            $addres = new Address();
-            $addres->address = $address1;
-            $addres->user_id = $record->id;
-            $addres->save();
+            $addres1 = new Address();
+            $addres1->address = $address1;
+            $addres1->user_id = $record->id;
+            $addres1->save();
         }
         if($address2){
             $addres = new Address();
@@ -39,12 +51,28 @@ class UserController extends Controller
             $addres->user_id = $record->id;
             $addres->save();
         }
+        $record->address_id = $addres1->id;
+        $record->save();
 
         return back()->withSuccess('User added successfully!');
     }
 
-    public function modifyUser(Request $request,$userid)
+    /*** Display the specified resource. */
+    public function show(string $id)
     {
+        //
+    }
+
+    /*** Show the form for editing the specified resource. */
+    public function edit(string $userid)
+    {   
+        $user = User::find($userid);
+        return view('edit', compact('user'));
+    }
+
+    /*** Update the specified resource in storage. */
+    public function update(Request $request, $userId)
+    {   
         
         $validated = $request->validate([
             'inputName' => 'required|string|max:255',
@@ -54,15 +82,15 @@ class UserController extends Controller
 
         $name = request('inputName');
         $address = request('inputAddress');
-        $addressId = request('addressId');
         $newAddress = request('newAddress');
         $contactno = request('contactNo');
 
-        $record = User::find($userid);
+        $record = User::find($userId);
         $record->name = $name;
         $record->contact = $contactno;
         $record->save();
 
+        $addressId = $record->address_id;
         if($address){
             $addressRecord = Address::find($addressId);
             $addressRecord->address = $address;
@@ -71,18 +99,21 @@ class UserController extends Controller
         if($newAddress){
             $addres = new Address();
             $addres->address = $newAddress;
-            $addres->user_id = $userid;
+            $addres->user_id = $userId;
             $addres->save();
+
+            $record->address_id = $addres->id;  //Update New address as latest address
+            $record->save();
         }
 
         return back()->withSuccess('User updated successfully!');
     }
 
-    public function deleteUser($id)
+    /*** Remove the specified resource from storage. */
+    public function destroy(string $user)
     {
-        User::find($id)->delete();
-        Address::where('user_id',$id)->delete();
+        User::find($user)->delete();
+        Address::where('user_id',$user)->delete();
         return response()->json(['success'=>'User Deleted Successfully!']);
     }
-
 }

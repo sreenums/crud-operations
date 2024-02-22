@@ -1,5 +1,7 @@
 @extends('layout')
 
+@section('title', 'Add User')
+
 @section('content')
 
 <br>
@@ -19,7 +21,7 @@
   
   <h2>Add New User</h2>
 
-  <form method="POST" id="registrationForm" class="was-validated" action="/submit-registration" >
+  <form method="POST" id="registrationForm" class="was-validated" action="{{ route('users.store') }}" >
     @csrf
 
     <div class="mb-3 mt-3 col-md-6">

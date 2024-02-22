@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('contact',15);
+            $table->bigInteger('address_id')->default(0);
             //$table->string('email')->unique();
             //$table->timestamp('email_verified_at')->nullable();
             //$table->string('password');

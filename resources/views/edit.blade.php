@@ -1,5 +1,7 @@
 @extends('layout')
 
+@section('title', 'Edit User')
+
 @section('content')
 
 <br>
@@ -20,8 +22,9 @@
   <div>
     <h2>Edit User</h2>
   </div>
-  <form id="editSave" action="/user-modify/{{ $user->id }}" class="was-validated" method="POST">
+  <form id="editSave" action="{{ route('users.update', ['user' => $user->id] ) }}" class="was-validated" method="POST">
     @csrf
+    @method('PUT')
 
     <div class="mb-3 mt-3 col-md-6">
       <label for="inputName" class="form-label">Name:</label>
@@ -34,7 +37,7 @@
     <div class="mb-3 col-md-6">
       <label for="inputAddress1" class="form-label">Existing Address:</label>
       <input type="text" class="form-control" id="inputAddress" placeholder="Enter address" name="inputAddress" maxlength="255" value="{{ $user->address->address }}" required>
-      <input type="hidden" name="addressId" id="addressId" value="{{ $user->address->id }}">
+      
       @if ($errors->has('inputAddress'))
         <div class="validation-error">Field can't be empty. Please fill out this field.</div>
       @endif
@@ -44,7 +47,7 @@
     </div>
 
     <div class="mb-3 col-md-6">
-      <label for="inputAddress1" class="form-label">New Address (optional)</label>
+      <label for="inputAddress1" class="form-label">Add Address (optional)</label>
       <input type="text" class="form-control border border-light" id="newAddress" placeholder="Enter address 2" name="newAddress" >
       @if ($errors->has('newAddress'))
         <div >Please fill out this field.</div>
