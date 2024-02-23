@@ -25,18 +25,24 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'inputName' => 'required|string|max:255',
+            'emailId' => 'required|email|max:255',
             'inputAddress1' => 'required|string|max:255',
             'contactNo' => 'required|digits:10',
+            'password' => 'required|min:8',
         ]);
         
         $name = request('inputName');
+        $emailId = request('emailId');
         $address1 = request('inputAddress1');
         $address2 = request('inputAddress2');
         $contactno = request('contactNo');
-        
+        $password = request('password');
+
         $record= new User();
         $record->name = $name;
+        $record->email = $emailId;
         $record->contact = $contactno;
+        $record->password = bcrypt($password);
         $record->save();
         
         if($address1){

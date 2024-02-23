@@ -7,7 +7,7 @@
 <br>
 <div class="container mt-3">
   <div>
-    <a href="/" >Back</a>
+    <a href="/home" >Back</a>
   </div>
   <br>
 

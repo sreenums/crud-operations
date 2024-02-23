@@ -7,7 +7,7 @@
 <br>
 <div class="container mt-3">
   <div>
-    <a href="/" class="btn btn-dark">Back</a>
+    <a href="/home" class="btn btn-dark">Back</a>
   </div>
   <br>
 
@@ -47,7 +47,12 @@
     </div>
 
     <div class="mb-3 col-md-6">
-      <label for="inputAddress1" class="form-label">Add Address (optional)</label>
+      <label for="emailId" class="form-label">Email Id</label>
+      <input type="text" class="form-control border border-light" id="emailId"name="emailId" value="{{ $user->email }}" disabled>
+    </div>
+
+    <div class="mb-3 col-md-6">
+      <label for="inputAddress1" class="form-label">Add New Address (optional)</label>
       <input type="text" class="form-control border border-light" id="newAddress" placeholder="Enter address 2" name="newAddress" >
       @if ($errors->has('newAddress'))
         <div >Please fill out this field.</div>

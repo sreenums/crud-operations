@@ -7,7 +7,7 @@
 <br>
 <div class="container mt-3">
   <div>
-    <a href="/" class="btn btn-dark">Back</a>
+    <a href="/home" class="btn btn-dark">Back</a>
   </div>
   <br>
 
@@ -33,6 +33,14 @@
     </div>
 
     <div class="mb-3 col-md-6">
+      <label for="emailId" class="form-label">Email Id:</label>
+      <input type="email" class="form-control" id="emailId" placeholder="Enter Email Id" name="emailId" required>
+      @if ($errors->has('emailId'))
+        <div class="validation-error">Please fill out this field.</div>
+      @endif
+    </div>
+
+    <div class="mb-3 col-md-6">
       <label for="inputAddress1" class="form-label">Address 1:</label>
       <input type="text" class="form-control" id="inputAddress1" placeholder="Enter address" name="inputAddress1" required>
       @if ($errors->has('inputAddress1'))
@@ -41,9 +49,17 @@
     </div>
 
     <div class="mb-3 col-md-6">
-      <label for="inputAddress1" class="form-label">Address 2 (optional):</label>
+      <label for="inputAddress2" class="form-label">Address 2 (optional):</label>
       <input type="text" class="form-control" id="inputAddress2" placeholder="Enter address 2" name="inputAddress2" >
       @if ($errors->has('inputAddress2'))
+        <div >Please fill out this field.</div>
+      @endif
+    </div>
+
+    <div class="mb-3 col-md-6">
+      <label for="password" class="form-label">Password:</label>
+      <input type="password" class="form-control" id="password" placeholder="Enter Password" minlength="8" name="password" required>
+      @if ($errors->has('password'))
         <div >Please fill out this field.</div>
       @endif
     </div>

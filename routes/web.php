@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\Authenticate;
 use App\Models\Address;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
@@ -15,10 +17,13 @@ use App\Models\User;
 |
 */
 
-Route::get('/', 'UserController@index');
+Route::get('/home', 'UserController@index');
 
-Route::resource('/users', UserController::class);
+Route::resource('/users', UserController::class)->middleware(Authenticate::class);
 
 Route::get('/view-address/{uid}',function($uid){
     return view('addresses',['addresses' => Address::all()->where('user_id',$uid)]);
-});
+})->middleware(Authenticate::class);
+
+Route::get('/', 'LoginController@loginForm');
+Route::post('/login', 'LoginController@login');
