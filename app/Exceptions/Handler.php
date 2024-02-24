@@ -2,7 +2,10 @@
 
 namespace App\Exceptions;
 
+use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Session\TokenMismatchException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -27,4 +30,15 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $exception)
+    {   
+        
+        if ($exception instanceof TokenMismatchException) {
+            return redirect()->route('login.index')->withErrors(['loginError' => 'Please login again']);
+        }
+        return parent::render($request, $exception);
+        
+    }
+
 }

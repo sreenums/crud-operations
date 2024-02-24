@@ -5,7 +5,7 @@
 @section('content')
 
 <br>
-<div class="container mt-3">
+<div class="container mt-3 max-tb-width">
   <div>
     <a href="/home" class="btn btn-dark">Back</a>
   </div>
@@ -26,7 +26,7 @@
     @csrf
     @method('PUT')
 
-    <div class="mb-3 mt-3 col-md-6">
+    <div class="mb-3 mt-3 col-md-10">
       <label for="inputName" class="form-label">Name:</label>
       <input type="text" class="form-control" id="inputName" placeholder="Enter name" name="inputName" maxlength="255" value="{{ $user->name }}" required>
       @if ($errors->has('inputName'))
@@ -34,7 +34,7 @@
       @endif
     </div>
     
-    <div class="mb-3 col-md-6">
+    <div class="mb-3 col-md-10">
       <label for="inputAddress1" class="form-label">Existing Address:</label>
       <input type="text" class="form-control" id="inputAddress" placeholder="Enter address" name="inputAddress" maxlength="255" value="{{ $user->address->address }}" required>
       
@@ -46,12 +46,12 @@
       </div>
     </div>
 
-    <div class="mb-3 col-md-6">
+    <div class="mb-3 col-md-10">
       <label for="emailId" class="form-label">Email Id</label>
       <input type="text" class="form-control border border-light" id="emailId"name="emailId" value="{{ $user->email }}" disabled>
     </div>
 
-    <div class="mb-3 col-md-6">
+    <div class="mb-3 col-md-10">
       <label for="inputAddress1" class="form-label">Add New Address (optional)</label>
       <input type="text" class="form-control border border-light" id="newAddress" placeholder="Enter address 2" name="newAddress" >
       @if ($errors->has('newAddress'))
@@ -59,7 +59,7 @@
       @endif
     </div>
 
-    <div class="mb-3 col-md-2">
+    <div class="mb-3 col-md-3">
       <label for="inputAddress1" class="form-label">Contact No:</label>
       <input type="text" class="form-control" id="contactNo" placeholder="+91" name="contactNo" maxlength="10" minlength="10" onkeypress="return /[0-9]/i.test(event.key)" value="{{ $user->contact }}" required>
       @if ($errors->has('contactNo'))

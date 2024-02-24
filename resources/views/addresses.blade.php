@@ -5,7 +5,7 @@
 @section('content')
 
 <br>
-<div class="container mt-3">
+<div class="container mt-3 max-tb-width">
   <div>
     <a href="/home" >Back</a>
   </div>

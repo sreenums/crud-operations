@@ -19,11 +19,18 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            // Authentication passed...
             return redirect()->intended('/home');
         }
 
-        return redirect()->back()->withInput($request->only('email'))->withErrors(['loginError' => 'Invalid email or password']);
-        //return view('/');
+        return redirect()->back()->withInput($request->only('email'))->withErrors(['loginError' => 'Invalid email Id or password']);
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/')->with('success', 'You have been logged out.');
     }
 }

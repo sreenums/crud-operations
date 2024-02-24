@@ -2,6 +2,10 @@
 
 @section('title', 'User Login')
 
+@section('optional-section')
+
+@endsection
+
 @section('content')
 
 <br>
@@ -22,14 +26,22 @@
 </style>
 
 <div class="container">
+
     <div class="login-page bg-light">
         <div class="container">
             <div class="row">
+
                 <div class="col-lg-10 offset-lg-1">
+                @if(session('success'))
+                <div class="alert alert-success ">
+                    {{ session('success') }}
+                </div>
+                @endif
                   <h3 class="mb-3">Login Now</h3>
                     @if ($errors->has('loginError'))
                     <div class="validation-error">{{ $errors->first('loginError') }}</div>
                     @endif
+
                     <div class="bg-white shadow rounded">
                         <div class="row">
                             <div class="col-md-7 pe-0">
@@ -51,17 +63,6 @@
                                                     <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password">
                                                 </div>
                                             </div>
-
-                                            <div class="col-sm-6">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="inlineFormCheck">
-                                                    <label class="form-check-label" for="inlineFormCheck">Remember me</label>
-                                                </div>
-                                            </div>
-
-                                            <!--<div class="col-sm-6">
-                                                <a href="#" class="float-end text-primary">Forgot Password?</a>
-                                            </div>-->
 
                                             <div class="col-12">
                                                 <button type="submit" class="btn btn-primary px-4 float-end mt-4" id="loginSubmit" name="loginSubmit">login</button>

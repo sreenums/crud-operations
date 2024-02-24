@@ -3,7 +3,7 @@
 @section('title', 'Home Page')
 
 @section('content')
-<br>
+
 
 <div class="container mt-3">
   <div class="text-right">
@@ -29,7 +29,9 @@
             <td><a href="{{ route('users.edit', ['user' => $user->id]) }}"> {{ $user->name; }} </a></td>
             <td> {{ $user->address->address; }} </td>
             <td>{{ $user->contact; }}</td>
-            <td><a href="javascript:void(0)" id="delete-user" data-url="{{ route('users.destroy', ['user' => $user->id]) }}" class="btn btn-danger"> Delete </a></td>
+            <td>
+              <a href="javascript:void(0)" id="delete-user" data-url="{{ route('users.destroy', ['user' => $user->id]) }}" class="btn btn-danger"> Delete </a>
+            </td>
           </tr>
         @endforeach
 

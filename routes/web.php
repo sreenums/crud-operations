@@ -17,7 +17,7 @@ use App\Models\User;
 |
 */
 
-Route::get('/home', 'UserController@index');
+Route::get('/home', 'UserController@index')->middleware(Authenticate::class);
 
 Route::resource('/users', UserController::class)->middleware(Authenticate::class);
 
@@ -25,5 +25,7 @@ Route::get('/view-address/{uid}',function($uid){
     return view('addresses',['addresses' => Address::all()->where('user_id',$uid)]);
 })->middleware(Authenticate::class);
 
-Route::get('/', 'LoginController@loginForm');
+Route::get('/', 'LoginController@loginForm')->name('login.index');
 Route::post('/login', 'LoginController@login');
+
+Route::get('/logot', 'LoginController@logout')->name('logout');

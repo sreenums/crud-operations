@@ -10,7 +10,9 @@ class UserController extends Controller
     /*** Display a listing of the resource. */
     public function index()
     {
-        $users = User::latest()->with(['address'])->get();
+        $users = User::latest()->where([
+            ['id', '<>', 1]
+        ])->with(['address'])->get();
         return view('welcome', compact('users'));
     }
     
@@ -25,14 +27,16 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'inputName' => 'required|string|max:255',
-            'emailId' => 'required|email|max:255',
+            'email' => 'required|email|unique:users|max:255',
             'inputAddress1' => 'required|string|max:255',
             'contactNo' => 'required|digits:10',
             'password' => 'required|min:8',
+        ], [
+            'email.unique' => 'The email address has already been taken.',
         ]);
-        
+
         $name = request('inputName');
-        $emailId = request('emailId');
+        $emailId = request('email');
         $address1 = request('inputAddress1');
         $address2 = request('inputAddress2');
         $contactno = request('contactNo');
@@ -118,8 +122,8 @@ class UserController extends Controller
     /*** Remove the specified resource from storage. */
     public function destroy(string $user)
     {
-        User::find($user)->delete();
         Address::where('user_id',$user)->delete();
+        User::find($user)->delete();
         return response()->json(['success'=>'User Deleted Successfully!']);
     }
 }
