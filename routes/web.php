@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\Authenticate;
 use App\Models\Address;
@@ -17,7 +18,7 @@ use App\Models\User;
 |
 */
 
-Route::get('/home', 'UserController@index')->middleware(Authenticate::class);
+Route::get('/home', 'UserController@index')->name('user.home')->middleware(Authenticate::class);
 
 Route::resource('/users', UserController::class)->middleware(Authenticate::class);
 
@@ -29,3 +30,13 @@ Route::get('/', 'LoginController@loginForm')->name('login.index');
 Route::post('/login', 'LoginController@login');
 
 Route::get('/logot', 'LoginController@logout')->name('logout');
+Route::get('/dashboard', function(){
+    return view('dashboard');
+})->name('dashboard');
+
+// Route::get('/posts-home', function(){
+//     return view('posts.posts-home');
+// })->name('posts-home');
+
+//For Posts
+Route::resource('/posts', PostController::class);

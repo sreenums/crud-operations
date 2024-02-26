@@ -23,15 +23,31 @@
   </style>
 
   @section('optional-section')  
-  <div class="container mt-3 d-flex justify-content-end">
-    <a href=" {{ route('logout') }}" class="btn btn-info btn-lg mr-5">
-      <span class="glyphicon glyphicon-log-out"></span> Log out
-    </a>
-  </div>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="{{ route('dashboard') }}">Home</a>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href=" {{ route('posts.index'); }} ">Posts</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href=" {{ route('user.home'); }} ">Users</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="container mt-3 d-flex justify-content-end">
+        <a href=" {{ route('logout') }}" class="btn btn-info btn-lg mr-5">
+          <span class="glyphicon glyphicon-log-out"></span> Log out
+        </a>
+    </div>
+  </nav>
+  <br>
   @show
 
 </head>
 <body>
-    @yield('content');
+    @yield('content')
 </body>
 </html>

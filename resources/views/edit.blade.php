@@ -6,7 +6,8 @@
 
 <br>
 <div class="container mt-3 max-tb-width">
-  <div>
+  <br>
+  <div class="mt-3">
     <a href="/home" class="btn btn-dark">Back</a>
   </div>
   <br>

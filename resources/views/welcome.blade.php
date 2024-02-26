@@ -6,8 +6,9 @@
 
 
 <div class="container mt-3">
-  <div class="text-right">
-    <a href="{{ route('users.create') }}" class="btn btn-success">Add New</a>
+  <br>
+  <div class="text-right mt-5">
+    <a href="{{ route('users.create') }}" class="btn btn-success">Add New User</a>
   </div>
   <br>
   <h2>CRUD Operations</h2>

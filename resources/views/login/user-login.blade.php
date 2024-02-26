@@ -52,7 +52,7 @@
                                                 <label>Email Id<span class="text-danger">*</span></label>
                                                 <div class="input-group">
                                                     <div class="input-group-text"><i class="bi bi-person-fill"></i></div>
-                                                    <input type="email" class="form-control" name='email' id='email' placeholder="Enter valid Email Id">
+                                                    <input type="email" class="form-control" name='email' id='email' placeholder="Enter valid Email Id" required>
                                                 </div>
                                             </div>
 
@@ -60,7 +60,7 @@
                                                 <label>Password<span class="text-danger">*</span></label>
                                                 <div class="input-group">
                                                     <div class="input-group-text"><i class="bi bi-lock-fill"></i></div>
-                                                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password">
+                                                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password" required>
                                                 </div>
                                             </div>
 
