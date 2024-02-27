@@ -55,4 +55,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Post::class)->latest();
     }
+
+    public static function getUsersExcludingAdminWithAddress()
+    {
+        return static::latest()->where('role', '<>', 'admin')->with('address')->get();
+    }
+    public static function getUsersList()
+    {
+        return static::where('role', '<>', 'admin')->orderBy('name')->get();
+    }
 }

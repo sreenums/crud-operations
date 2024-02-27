@@ -32,11 +32,8 @@ Route::post('/login', 'LoginController@login');
 Route::get('/logot', 'LoginController@logout')->name('logout');
 Route::get('/dashboard', function(){
     return view('dashboard');
-})->name('dashboard');
-
-// Route::get('/posts-home', function(){
-//     return view('posts.posts-home');
-// })->name('posts-home');
+})->name('dashboard')->middleware(Authenticate::class);
 
 //For Posts
-Route::resource('/posts', PostController::class);
+Route::post('/posts/{postId}','PostController@addComment')->name('comment.save');
+Route::resource('/posts', PostController::class)->middleware(Authenticate::class);

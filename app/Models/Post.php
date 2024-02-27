@@ -13,4 +13,9 @@ class Post extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public static function getPostsList()
+    {
+        return static::latest()->with(['user'])->get();
+    }
 }

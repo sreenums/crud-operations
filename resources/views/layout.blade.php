@@ -20,7 +20,21 @@
     .max-tb-width{
       max-width: 790px;
     }
+
+    .user-image {
+      width: 550px;
+      height: 250px;
+    }
   </style>
+  <script type="text/javascript">
+  
+  $.ajaxSetup({
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+      });
+  
+  </script>
 
   @section('optional-section')  
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">

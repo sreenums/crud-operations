@@ -10,9 +10,7 @@ class UserController extends Controller
     /*** Display a listing of the resource. */
     public function index()
     {
-        $users = User::latest()->where([
-            ['id', '<>', 1]
-        ])->with(['address'])->get();
+        $users = User::getUsersExcludingAdminWithAddress();
         return view('welcome', compact('users'));
     }
     

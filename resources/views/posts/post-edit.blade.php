@@ -1,6 +1,6 @@
 @extends('layout')
 
-@section('title', 'Add Post')
+@section('title', 'Edit Post')
 
 @section('content')
 <br>
@@ -19,42 +19,50 @@
     </p>
   @endif
   
-  <h2>Add New Post</h2>
+  <h2>Edit Post</h2>
 
-  <form method="POST" id="postForm" class="was-validated" action=" {{ route('posts.store') }} " enctype="multipart/form-data">
+  <form method="POST" id="editForm" class="was-validated" action="{{ route('posts.update', ['post'=> $post->id] ) }}" enctype="multipart/form-data">
     @csrf
-    <div class="col-md-6">
+    @method('PUT')
+    
+    <div class="col-md-8">
       <label for="title" class="form-label">Title</label>
-      <input type="text" class="form-control" id="title" name="title" maxlength="150" required>
+      <input type="text" class="form-control" id="title" name="title" maxlength="250" value="{{ $post->title }}" required>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 mt-3">
       <label for="author" class="form-label">Author</label>
       <select id="author" name="author" class="form-select" required>
         <option selected value="">--Select-- </option>
 
         @foreach ($users as $user)
-        <option value="{{ $user->id }} ">{{ $user->name }} </option>
+        <option value="{{ $user->id }}" @if ($user->id == $post->user_id)
+            selected
+        @endif >{{ $user->name }} </option>
         @endforeach
 
       </select>
     </div>
-    <div class="col-12">
+    <div class="col-12 mt-3">
       <label for="content" class="form-label">Content</label>
-      <textarea class="form-control" id="content" name="content" rows="4" maxlength="1000" required></textarea>
+      <textarea class="form-control" id="content" name="content" rows="6" maxlength="1000" required>{{ $post->content }}</textarea>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 mt-3">
       <label for="datePublished" class="form-label">Date published</label>
-      <input type="date" id="datePublished" class="form-control" name="datePublished" required>
+      <input type="date" id="datePublished" class="form-control" name="datePublished" value="{{ \Carbon\Carbon::parse($post->date_published)->format('Y-m-d') }}" required>
     </div>
-    <div class="col-md-6">
-      <label for="image" class="form-label">Image</label>
+    <div class="col-md-6 mt-3">
+      <label for="image" class="form-label">Update new image</label>
       <input type="file" name="image" id="image" class="form-control" accept="image/*">
     </div>
-    <div class="col-md-3">
+    <div class="col-md-3 mt-3">
       <label for="inputZip" class="form-label">Status</label>
       <select id="checkActive" name="checkActive" class="form-select" required>
-        <option selected value="1">Active</option>
-        <option value="0">Inactive</option>
+        <option @if ($post->is_active == 1)
+            selected
+        @endif value="1">Active</option>
+        <option @if ($post->is_active == 0)
+            selected
+        @endif value="0">Inactive</option>
       </select>
     </div>
     <div class="col-12 mt-3">
