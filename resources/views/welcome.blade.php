@@ -11,7 +11,7 @@
     <a href="{{ route('users.create') }}" class="btn btn-success">Add New User</a>
   </div>
   <br>
-  <h2>CRUD Operations</h2>
+  <h2>Users List</h2>
   <table class="table table-hover">
     <thead class="table-success">
       <tr>

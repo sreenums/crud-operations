@@ -22,10 +22,10 @@
   <article>
       <h2>{{ $post->title; }}</h2>
       <p>
-          By {{ $user->name }} , &nbsp; published at {{ $post->date_published }}
+          By {{ $user->name }} , &nbsp; published on {{ $post->published_at_formatted }}
       </p>
       <p>
-        Status : {!! $postStatusText !!}
+        Status : {!! $post->status_text !!}
       </p>
       <p>
           {{ $post->content; }}

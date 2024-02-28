@@ -11,7 +11,7 @@ class PostController extends Controller
 {
     public function index()
     {   
-        $posts = Post::getPostsList();
+        $posts = Post::getPostsListWithComments();
         return view('posts.posts-home', compact('posts'));
     }
 
@@ -106,6 +106,7 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
+        Comment::where('post_id',$post->id)->delete();
         $post->delete();
         return response()->json(['success'=>'Post Deleted Successfully!']);
     }
