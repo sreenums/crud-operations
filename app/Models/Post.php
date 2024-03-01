@@ -10,14 +10,30 @@ class Post extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'title',
+        'user_id',
+        'content',
+        'image',
+        'date_published',
+        'is_active'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public static function getPostsListWithComments()
+    public static function getPostsListWithCommentsCount()
     {
-        return static::latest()->with(['user'])->with('comments')->get();
+        return static::latest()->with(['user'])->withCount('comments')->paginate(1);
+        // $posts = static::latest()->with(['user'])->withCount('comments')->paginate(3);
+        // $userNames = $posts->pluck('user.name')->unique();
+
+        // return [
+        //     'posts' => $posts,
+        //     'userNames' => $userNames,
+        // ];
     }
 
     public function comments()
@@ -27,7 +43,7 @@ class Post extends Model
 
     protected function getStatusTextAttribute()
     {
-        return $this->is_active ? '<font color="green">Active</font>' : '<font color="red">Inactive</font>';
+        return $this->is_active ? 'Active' : 'Inactive';
     }
 
     protected function getPublishedAtFormattedAttribute()

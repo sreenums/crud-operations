@@ -25,7 +25,7 @@
           By {{ $user->name }} , &nbsp; published on {{ $post->published_at_formatted }}
       </p>
       <p>
-        Status : {!! $post->status_text !!}
+        Status : {{ $post->status_text }}
       </p>
       <p>
           {{ $post->content; }}

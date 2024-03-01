@@ -2,59 +2,66 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EditPostRequest;
+use App\Http\Requests\StorePostRequest;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
 {
+    //Display a listing of the posts.
     public function index()
     {   
-        $posts = Post::getPostsListWithComments();
-        return view('posts.posts-home', compact('posts'));
+        $posts = Post::getPostsListWithCommentsCount();
+        //$userNames = $posts->pluck('user.name','user.id')->unique();
+        $userNames = User::select('id', 'name')
+            ->whereIn('id', function ($query) {
+                $query->select('user_id')
+                    ->from('posts');
+                })
+            ->distinct()
+            ->get();
+        return view('posts.posts-home', compact('posts','userNames'));
+    
     }
 
+    //Show the form for creating a new post.
     public function create()
     {
-        $users = User::getUsersList();
+        $users = User::getList();
         return view('posts.add', compact('users'));
     }
 
-    public function store(Request $request)
+    //Store a newly created post in storage.
+    public function store(StorePostRequest $request)
     {
         $imageName = Null;
-        $request->validate([
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'title' => 'required|max:255',
-            'content' => 'required|string|max:1000',
-            'datePublished' => 'required',
-        ]);
+        $validated = $request->validated();
         
-        $title = Request('title');
-        $userId = Request('author');
-        $content = Request('content');
-        $datePublished = Request('datePublished');
-        $active = Request('checkActive');
-        if(Request('image')){
+        if($request->hasFile('image')){
             $imageName = uniqid().'.'. Request('image')->extension();
             $request->image->move(public_path('images'),$imageName);
         }
 
-        $postRecord = new Post();
-        $postRecord->title = $title;
-        $postRecord->user_id = $userId;
-        $postRecord->content = $content;
-        if($imageName){  
-            $postRecord->image = $imageName;  
-        }
-        $postRecord->date_published = $datePublished;
-        $postRecord->is_active = $active;
+        $postRecord = new Post([
+            'title' => $validated['title'],
+            'user_id' => $validated['author'],
+            'content' => $validated['content'],
+            'date_published' => $validated['datePublished'],
+            'is_active' => Request('checkActive'),
+            'image' => $imageName
+        ]);
+
         $postRecord->save();
 
         return back()->withSuccess('Post added successfully!');
     }
 
+    //Display the specified post
     public function show(Post $post)
     {
         $user = User::find($post->user_id);
@@ -62,48 +69,38 @@ class PostController extends Controller
         return view('posts.post-view', compact('post','user','postStatusText'));
     }
 
+    //Show the form for editing the specified post.
     public function edit(Post $post)
     {
-        $users = User::getUsersList();
+        $users = User::getList();
         return view('posts.post-edit', compact('post','users'));
     }
 
-    public function update(Request $request, Post $post)
+    //Update the specified post in storage.
+    public function update(EditPostRequest $request, Post $post)
     {
         
         $imageName = NULL;
-        $request->validate([
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'title' => 'required|max:255',
-            'content' => 'required|string|max:1000',
-            'datePublished' => 'required',
-            'author' => 'required',
-        ]);
+        $validated = $request->validated();
 
-        $title = Request('title');
-        $userId = Request('author');
-        $content = Request('content');
-        $datePublished = Request('datePublished');
-        $active = Request('checkActive');
-        if(Request('image')){
+        if($request->hasFile('image')){
             $imageName = uniqid().'.'. Request('image')->extension();
             $request->image->move(public_path('images'),$imageName);
         }
 
-        $post->title = $title;
-        $post->user_id = $userId;
-        $post->content = $content;
-        $post->date_published = $datePublished;
-        $post->is_active = $active;
-        if($imageName){
-            $post->image = $imageName;
-        }
+        $post->fill([
+            'title' => $validated['title'],
+            'user_id' => $validated['author'],
+            'content' => $validated['content'],
+            'date_published' => $validated['datePublished'],
+            'is_active' => Request('checkActive'),
+            'image' => $imageName
+        ])->save();
 
-        $post->save();
         return back()->withSuccess('Post updated successfully!');
-
     }
 
+    //Remove the specified post from storage
     public function destroy(Post $post)
     {
         Comment::where('post_id',$post->id)->delete();
@@ -111,15 +108,4 @@ class PostController extends Controller
         return response()->json(['success'=>'Post Deleted Successfully!']);
     }
 
-    public function addComment(Request $request, $postId)
-    {
-        $comment = $request->comment;
-        
-        $comentRecord = new Comment();
-        $comentRecord->post_id = $postId;
-        $comentRecord->comment = $comment;
-
-        $comentRecord->save();
-        return back()->withSuccess('Comment added successfully!');
-    }
 }

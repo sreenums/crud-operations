@@ -47,10 +47,12 @@ class User extends Authenticatable
     // {
     //     return $this->hasMany(Address::class)->latest();
     // }
+
     public function address()
     {
         return $this->hasOne(Address::class)->latest();
     }
+
     public function posts()
     {
         return $this->hasMany(Post::class)->latest();
@@ -60,8 +62,10 @@ class User extends Authenticatable
     {
         return static::latest()->where('role', '<>', 'admin')->with('address')->get();
     }
-    public static function getUsersList()
+
+    public static function getList()
     {
         return static::where('role', '<>', 'admin')->orderBy('name')->get();
     }
+
 }
