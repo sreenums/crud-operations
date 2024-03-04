@@ -17,7 +17,7 @@
                   <!-- Search Input -->
                   <div class="form-group">
                       <label for="search">Search:</label>
-                      <input type="text" id="search" name="search" class="form-control" placeholder="Title or content">
+                      <input type="text" id="search" name="search" class="form-control" placeholder="Title or content" value="{{ request('search') }}">
                   </div>
               </div>
               <div class="col-md-3">
@@ -27,7 +27,7 @@
                       <select id="author" name="author" class="form-control">
                           <option value="all">All Authors</option>
                           @foreach($userNames as $authorId => $authorName)
-                              <option value="{{ $authorName->id }}">{{ $authorName->name }}</option>
+                              <option value="{{ $authorName->id }}" {{ request('author') == $authorName->id ? 'selected' : 'all' }}>{{ $authorName->name }}</option>
                           @endforeach
                       </select>
                   </div>
@@ -38,16 +38,16 @@
                       <label for="status">Status:</label>
                       <select id="status" name="status" class="form-control">
                           <option value="all">All Statuses</option>
-                          <option value="1">Active</option>
-                          <option value="0">Inactive</option>
+                          <option value="1" {{ request('status') == "1" ? 'selected' : 'all' }} >Active</option>
+                          <option value="0" {{ request('status') == "0" ? 'selected' : 'all' }}>Inactive</option>
                       </select>
                   </div>
               </div>
               <div class="col-md-3">
                   <!-- Search Input Count -->
                   <div class="form-group">
-                      <label for="searchCommentsCount">Comments count:</label>
-                      <input type="text" id="searchCommentsCount" name="searchCommentsCount" class="form-control" placeholder="Count">
+                      <label for="commentsCount">Comments count:</label>
+                      <input type="text" id="commentsCount" name="commentsCount" class="form-control" onkeypress="return /[0-9]/i.test(event.key)" placeholder="Count" value="{{ request('commentsCount') }}">
                   </div>
               </div>
           </div>
@@ -56,7 +56,54 @@
               <div class="col-md-12">
                   <h4>Search Results:</h4>
                   <!--<ul id="searchResults"></ul>-->
-                  <table id="searchResults"></table>
+                  <table id="searchResultsTable" class="table table-hover">
+                    <thead class="table-success">
+                        <tr>
+                            <th>Sl.No</th>
+                            <th>Title</th>
+                            <th>Authour</th>
+                            <th>Date Published</th>
+                            <th>Comments Count</th>
+                            <th>Status</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="searchResults">
+
+
+
+                    @foreach ($posts as $post)
+                        <tr>
+                        <!--<td>{{ $loop->iteration }}</td>-->
+                        <td>{{ $posts->firstItem() + $loop->index }} </td>
+                        <td width="400px">{{ $post->title; }}</td>
+                        <td> {{ $post->user->name }} </td>
+                        <td>{{ $post->published_at_formatted; }}</td>
+                        <td>
+                            <a href="#" class="view-comments" data-post-id="{{ $post->id }}"> {{ $post->comments_count }} View</a>
+                        </td>
+                        <td>
+                            {{ $post->status_text }}
+                        </td>
+                        <td>
+                            <a href=" {{ route('posts.show', ['post' => $post->id]) }} " id="view-user" class="btn btn-primary"> View </a>
+                        </td>
+                        <td>
+                            <a href="{{ route('posts.edit', ['post' => $post->id]) }} " id="edit-user" class="btn btn-secondary"> Edit </a>
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)" id="delete-post" data-url="{{ route('posts.destroy', ['post' => $post->id]) }}" class="btn btn-danger"> Delete </a>
+                        </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                  </table>
+                <div id="pagination" class="mt-3">
+                    {{ $posts->links() }}
+                    <!-- Pagination links will be inserted here dynamically -->
+                </div>
               </div>
           </div>
       </div>
@@ -64,9 +111,9 @@
     </form>
 
     <br>
-    <h2>Posts List</h2>
+    <!--<h2>Posts List</h2>-->
     <table class="table table-hover">
-      <thead class="table-success">
+      <!--<thead class="table-success">
         <tr>
           <th>Sl.No</th>
           <th>Title</th>
@@ -78,33 +125,10 @@
           <th></th>
           <th></th>
         </tr>
-      </thead>
+      </thead>-->
 
       <tbody>
-        @foreach ($posts as $post)
-        <tr>
-          <!--<td>{{ $loop->iteration }}</td>-->
-          <td>{{ $posts->firstItem() + $loop->index }} </td>
-          <td width="400px">{{ $post->title; }}</td>
-          <td> {{ $post->user->name }} </td>
-          <td>{{ $post->published_at_formatted; }}</td>
-          <td>
-              <a href="#" class="view-comments" data-post-id="{{ $post->id }}"> {{ $post->comments_count }} View</a>
-          </td>
-          <td>
-            {{ $post->status_text }}
-          </td>
-          <td>
-            <a href=" {{ route('posts.show', ['post' => $post->id]) }} " id="view-user" class="btn btn-primary"> View </a>
-          </td>
-          <td>
-            <a href="{{ route('posts.edit', ['post' => $post->id]) }} " id="edit-user" class="btn btn-secondary"> Edit </a>
-          </td>
-          <td>
-            <a href="javascript:void(0)" id="delete-post" data-url="{{ route('posts.destroy', ['post' => $post->id]) }}" class="btn btn-danger"> Delete </a>
-          </td>
-        </tr>
-        @endforeach
+
         
         <!--Comments popup -->
         <div class="modal fade" id="commentsModal" tabindex="-1" aria-labelledby="commentsModalLabel" aria-hidden="true">
@@ -128,7 +152,7 @@
 
     </table>
     <div>
-        {{ $posts->links() }}
+        
     </div>
 </div>
 
@@ -136,25 +160,36 @@
 
     $(document).ready(function () {
         // Perform AJAX request on filter change or search input
-        $('#author, #status, #search, #searchCommentsCount').on('keyup change', function () {
+        $('#author, #status, #search, #commentsCount').on('keyup change', function () {
 
             $.ajax({
                 url: '/search',
-                type: 'POST',
+                type: 'GET',
                 data: {
                     author: $('#author').val(),
                     status: $('#status').val(),
                     search: $('#search').val(),
-                    searchCommentsCount: $('#searchCommentsCount').val(),
+                    commentsCount: $('#commentsCount').val(),
                     _token: '{{ csrf_token() }}'
                 },
                 success: function (response) {
-                  console.log('Response:', response);
+                  //console.log('Response:', response);
                     // Update search results
                     $('#searchResults').empty();
-                    $.each(response, function (index, post) {
-                        $('#searchResults').append('<tr><td>' + post.title + '<td>' + post.content + '</td></tr>');
+                    $.each(response.data, function (index, post) {
+                        console.log(response);
+                        if(post.is_active == '1'){ 
+                            active="Active"; 
+                        } else{ 
+                            active="Inactive"; 
+                        }
+                        cnt = index +1;
+
+                         $('#searchResults').append('<tr><td width="50px">'+ cnt +'</td><td>' + post.title + '</td><td>'+ post.user.name +'</td><td>'+ post.date_published+'</td><td><a href="#" class="view-comments" data-post-id="'+post.id+'">'+ post.comments_count +' (View)</a></td><td>'+ active +'</td></tr>');
+
                     });
+
+                    $('#pagination').html(response.links);
                 }
             });
         });
@@ -220,6 +255,7 @@
       });
 
   });
+  
 </script>
 
 @endsection

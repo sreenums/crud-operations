@@ -26,7 +26,7 @@ class Post extends Model
 
     public static function getPostsListWithCommentsCount()
     {
-        return static::latest()->with(['user'])->withCount('comments')->paginate(1);
+        return static::latest()->with(['user'])->withCount('comments')->paginate(2);
         // $posts = static::latest()->with(['user'])->withCount('comments')->paginate(3);
         // $userNames = $posts->pluck('user.name')->unique();
 
@@ -41,7 +41,7 @@ class Post extends Model
         return $this->hasMany(Comment::class);
     }
 
-    protected function getStatusTextAttribute()
+    public function getStatusTextAttribute()
     {
         return $this->is_active ? 'Active' : 'Inactive';
     }
