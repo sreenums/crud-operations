@@ -43,4 +43,4 @@ Route::get('/posts/{post}/comments', 'CommentController@showComments');
 Route::post('/posts/{postId}','CommentController@addComment')->name('comment.save');
 
 //For posts search
-Route::get('/search', 'SearchController@search');
+Route::get('/posts', 'SearchController@index')->name('posts.index');

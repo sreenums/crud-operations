@@ -63,6 +63,17 @@ class User extends Authenticatable
         return static::latest()->where('role', '<>', 'admin')->with('address')->get();
     }
 
+    public static function getPostsUserNames()
+    {
+        return static::select('id', 'name')
+        ->whereIn('id', function ($query) {
+            $query->select('user_id')
+                ->from('posts');
+            })
+        ->distinct()
+        ->get();
+    }
+
     public static function getList()
     {
         return static::where('role', '<>', 'admin')->orderBy('name')->get();
