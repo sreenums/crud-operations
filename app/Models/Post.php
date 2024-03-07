@@ -26,14 +26,7 @@ class Post extends Model
 
     public static function getPostsListWithCommentsCount()
     {
-        return static::latest()->with(['user'])->withCount('comments')->paginate(2);
-        // $posts = static::latest()->with(['user'])->withCount('comments')->paginate(3);
-        // $userNames = $posts->pluck('user.name')->unique();
-
-        // return [
-        //     'posts' => $posts,
-        //     'userNames' => $userNames,
-        // ];
+        return static::latest()->with(['user'])->withCount('comments')->latest();
     }
 
     public function comments()

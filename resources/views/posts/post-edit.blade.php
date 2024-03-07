@@ -55,14 +55,10 @@
       <input type="file" name="image" id="image" class="form-control" accept="image/*">
     </div>
     <div class="col-md-3 mt-3">
-      <label for="inputZip" class="form-label">Status</label>
+      <label for="checkActive" class="form-label">Status</label>
       <select id="checkActive" name="checkActive" class="form-select" required>
-        <option @if ($post->is_active == 1)
-            selected
-        @endif value="1">Active</option>
-        <option @if ($post->is_active == 0)
-            selected
-        @endif value="0">Inactive</option>
+          <option value="1" {{ $post->is_active == 1 ? 'selected' : '' }}>Active</option>
+          <option value="0" {{ $post->is_active == 0 ? 'selected' : '' }}>Inactive</option>
       </select>
     </div>
     <div class="col-12 mt-3">
@@ -71,5 +67,14 @@
   </form>
 
 </div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#checkActive').on('change', function() {
+            var selectedValue = $(this).val();
+            // Do something with the selected value, if needed
+            console.log(selectedValue);
+        });
+    });
+</script>
 
 @endsection

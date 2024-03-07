@@ -159,25 +159,33 @@
             loadComments(postId);
         });
 
-        //Filter for author name
-        $('#authorName').on('keyup change', function() {
-            var authorId = $(this).val();
 
-            $('#posts-table').DataTable().ajax.url("{{ route('posts.index') }}?author=" + authorId).load();
-        });
+        function handleFilterChange() {
+            var authorId = $('#authorName').val();
+            var statusId = $('#postStatus').val();
+            var commentsCount = $('#commentsCountPosts').val();
 
-        //Filter for status
-        $('#postStatus').on('keyup change', function() {
-            var statusId = $(this).val();
+            var url = "{{ route('posts.index') }}?";
 
-            $('#posts-table').DataTable().ajax.url("{{ route('posts.index') }}?status=" + statusId).load();
-        });
+            if (authorId) {
+                url += "author=" + authorId + "&";
+            }
+            if (statusId) {
+                url += "status=" + statusId + "&";
+            }
+            if (commentsCount) {
+                url += "commentsCount=" + commentsCount + "&";
+            }
 
-        //Filter for comments count
-        $('#commentsCountPosts').on('keyup change', function() {
-            var commentsCount = $(this).val();
+            // Remove trailing '&' if exists
+            url = url.replace(/&$/, "");
 
-            $('#posts-table').DataTable().ajax.url("{{ route('posts.index') }}?commentsCount=" + commentsCount).load();
+            $('#posts-table').DataTable().ajax.url(url).load();
+        }
+
+        // Event listeners for filter changes
+        $('#authorName, #postStatus, #commentsCountPosts').on('keyup change', function() {
+            handleFilterChange();
         });
 
         function loadComments(postId) {
@@ -237,38 +245,38 @@
         }
       });
 
-      // Function to load comments for a post need to remove
-      function loadCommentsOld(postId) {
-          $.ajax({
-              url: '/posts/' + postId + '/comments',
-              type: 'GET',
-              success: function(response) {
-                  var comments = response.comments;
-                  var commentsHtml = '';
-                  if (comments.length > 0) {
-                      commentsHtml += '<ul>';
-                      comments.forEach(function(comment) {
-                          commentsHtml += '<li>' + comment.comment + '</li><br>';
-                      });
-                      commentsHtml += '</ul>';
-                  } else {
-                      commentsHtml = 'No comments available.';
-                  }
-                  $('#commentsContainer').html(commentsHtml);
-                  $('#commentsModal').modal('show');
-              },
-              error: function(xhr, status, error) {
-                  console.error(xhr.responseText);
-              }
-          });
-      }
+    //   // Function to load comments for a post need to remove
+    //   function loadCommentsOld(postId) {
+    //       $.ajax({
+    //           url: '/posts/' + postId + '/comments',
+    //           type: 'GET',
+    //           success: function(response) {
+    //               var comments = response.comments;
+    //               var commentsHtml = '';
+    //               if (comments.length > 0) {
+    //                   commentsHtml += '<ul>';
+    //                   comments.forEach(function(comment) {
+    //                       commentsHtml += '<li>' + comment.comment + '</li><br>';
+    //                   });
+    //                   commentsHtml += '</ul>';
+    //               } else {
+    //                   commentsHtml = 'No comments available.';
+    //               }
+    //               $('#commentsContainer').html(commentsHtml);
+    //               $('#commentsModal').modal('show');
+    //           },
+    //           error: function(xhr, status, error) {
+    //               console.error(xhr.responseText);
+    //           }
+    //       });
+    //   }
 
-      // Event listener for clicking on "View" comments link need to remove
-      $('.view-comments').click(function(e) {
-          e.preventDefault();
-          var postId = $(this).data('post-id');
-          loadCommentsOld(postId);
-      });
+    //   // Event listener for clicking on "View" comments link need to remove
+    //   $('.view-comments').click(function(e) {
+    //       e.preventDefault();
+    //       var postId = $(this).data('post-id');
+    //       loadCommentsOld(postId);
+    //   });
 
   });
   

@@ -12,7 +12,7 @@ class SearchController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $posts = Post::latest()->with(['user'])->withCount('comments')->oldest();
+            $posts = Post::getPostsListWithCommentsCount();
 
             // Total records before filtering
             $totalRecords = $posts->count();
@@ -46,6 +46,27 @@ class SearchController extends Controller
                 $posts->having('comments_count', '=', $request->commentsCount);
             }
 
+
+            // Sorting based on ID column
+            if ($request->has('order')) {
+                $orderColumnIndex = $request->order[0]['column'];
+                $orderDirection = $request->order[0]['dir'];
+                $orderColumnName = $request->columns[$orderColumnIndex]['data'];
+
+                if ($orderColumnName === 'id') {
+                    $posts->orderBy('id', $orderDirection);
+                }
+            }
+
+
+            // Get the SQL query and bindings
+            $sql = $posts->toSql();
+            $bindings = $posts->getBindings();
+
+            // Log the SQL query and bindings
+            Log::info("SQL: $sql; Bindings: " . json_encode($bindings));
+
+
             // Total records after filtering
             $filteredRecords = $posts->count();
             $posts = $posts->skip($request->input('start'))->take($request->input('length'))->get();
@@ -70,9 +91,10 @@ class SearchController extends Controller
             ]);
         }
         
-        $posts = Post::getPostsListWithCommentsCount();
+        //$posts = Post::getPostsListWithCommentsCount();
         $userNames = User::getPostsUserNames();
-        return view('posts.posts-home', compact('posts','userNames'));
+        //return view('posts.posts-home', compact('posts','userNames'));
+        return view('posts.posts-home', compact('userNames'));
     }
 
 }

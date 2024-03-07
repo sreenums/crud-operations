@@ -26,6 +26,9 @@
     <div class="col-md-6">
       <label for="title" class="form-label">Title</label>
       <input type="text" class="form-control" id="title" name="title" maxlength="150" required>
+      @if ($errors->has('title'))
+        <div class="validation-error">Please fill out this field.</div>
+      @endif
     </div>
     <div class="col-md-6">
       <label for="author" class="form-label">Author</label>
@@ -37,22 +40,31 @@
         @endforeach
 
       </select>
+      @if ($errors->has('author'))
+        <div class="validation-error">Please select author.</div>
+      @endif
     </div>
     <div class="col-12">
       <label for="content" class="form-label">Content</label>
       <textarea class="form-control" id="content" name="content" rows="4" maxlength="1000" required></textarea>
+      @if ($errors->has('content'))
+        <div class="validation-error">Please enter content.</div>
+      @endif
     </div>
     <div class="col-md-4">
       <label for="datePublished" class="form-label">Date published</label>
       <input type="date" id="datePublished" class="form-control" name="datePublished" required>
+      @if ($errors->has('datePublished'))
+        <div class="validation-error">Please select date</div>
+      @endif
     </div>
     <div class="col-md-6">
       <label for="image" class="form-label">Image</label>
       <input type="file" name="image" id="image" class="form-control" accept="image/*">
     </div>
     <div class="col-md-3">
-      <label for="inputZip" class="form-label">Status</label>
-      <select id="checkActive" name="checkActive" class="form-select" required>
+      <label for="checkActive" class="form-label">Status</label>
+      <select id="checkActive" name="checkActive" class="form-select">
         <option selected value="1">Active</option>
         <option value="0">Inactive</option>
       </select>
