@@ -25,7 +25,7 @@
           By {{ $user->name }} , &nbsp; published on {{ $post->published_at_formatted }}
       </p>
       <p>
-        Status : {{ $post->status_text }}
+        Status : {!! $postStatusText !!}
       </p>
       <p>
           {{ $post->content; }}
@@ -37,15 +37,26 @@
       </p>
       @endif
 
+      <p>
+        Posts Category:
+        <ul>
+          @forelse($post->categories as $postCategory)
+            <li> {{ $postCategory->categoryMaster->category }} </li>
+            @empty
+            <li> No Category added </li>
+          @endforelse
+        </ul>
+      </p>
+
       <form method="POST" id="commentForm" name="commentForm" class="was-validated" action="{{ route('comment.save',['postId' => $post->id ]) }}">
         @csrf
         <label for="comment" class="form-label">Comment:</label>
         <input type="text" class="form-control" id="comment" name="comment" maxlength="250">
         <button type="submit" class="btn btn-outline-primary mt-3">Add Comment</button>
       </form>
-
+    <br>
   </article>
-
+<br>
 </div>
 
 @endsection

@@ -18,4 +18,9 @@ class Comment extends Model
     {
         return $this->belongsTo(Post::class);
     }
+
+    public static function deletePostComment($postId)
+    {
+        return static::where('post_id',$postId)->delete();
+    }
 }

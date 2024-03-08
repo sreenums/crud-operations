@@ -63,6 +63,9 @@ class User extends Authenticatable
         return static::latest()->where('role', '<>', 'admin')->with('address')->get();
     }
 
+    /**
+     * Authors list
+     */
     public static function getPostsUserNames()
     {
         return static::select('id', 'name')
@@ -71,6 +74,7 @@ class User extends Authenticatable
                 ->from('posts');
             })
         ->distinct()
+        ->orderBy('name')
         ->get();
     }
 

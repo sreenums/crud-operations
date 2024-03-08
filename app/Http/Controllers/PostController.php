@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EditPostRequest;
 use App\Http\Requests\StorePostRequest;
+use App\Models\Category;
+use App\Models\CategoryMaster;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
@@ -24,13 +26,13 @@ class PostController extends Controller
     public function create()
     {
         $users = User::getList();
-
-        return view('posts.add', compact('users'));
+        $categories = CategoryMaster::getCategories();
+        return view('posts.add', compact('users','categories'));
     }
 
     //Store a newly created post in storage.
     public function store(StorePostRequest $request)
-    {
+    {     
         // Use PostService to create a new post
         $this->postService->createPost($request);
 
@@ -40,18 +42,21 @@ class PostController extends Controller
     //Display the specified post
     public function show(Post $post)
     {
+        $post->load('categories');
         $user = User::find($post->user_id);
         $postStatusText = $post->is_active ? '<font color="green">Active</font>' : '<font color="red">Inactive</font>';
-
+        
         return view('posts.post-view', compact('post','user','postStatusText'));
     }
 
     //Show the form for editing the specified post.
     public function edit(Post $post)
     {
+        $post->load('categories');
         $users = User::getList();
+        $categories = CategoryMaster::getCategories();
 
-        return view('posts.post-edit', compact('post','users'));
+        return view('posts.post-edit', compact('post','users','categories'));
     }
 
     //Update the specified post in storage.
@@ -66,7 +71,8 @@ class PostController extends Controller
     //Remove the specified post from storage
     public function destroy(Post $post)
     {
-        Comment::where('post_id',$post->id)->delete();
+        Comment::deletePostComment($post->id);
+        Category::deletePostCategory($post->id);
         $this->postService->deletePost($post);
 
         return response()->json(['success'=>'Post Deleted Successfully!']);

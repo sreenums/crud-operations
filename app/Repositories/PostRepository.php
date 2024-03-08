@@ -28,5 +28,8 @@ class PostRepository
     {
         return $post->delete();
     }
-
+    public static function getPostsListWithCommentsCount()
+    {
+        return Post::latest()->with(['user'])->withCount('comments')->latest();
+    }
 }

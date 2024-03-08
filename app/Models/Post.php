@@ -26,12 +26,17 @@ class Post extends Model
 
     public static function getPostsListWithCommentsCount()
     {
-        return static::latest()->with(['user'])->withCount('comments')->latest();
+        return static::with(['user'])->withCount('comments')->latest();
     }
 
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
     }
 
     public function getStatusTextAttribute()

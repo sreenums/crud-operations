@@ -11,7 +11,7 @@
     </div>
     <form method="POST" id="searchPosts" name="searchPosts" action="#" >
       @csrf
-      <div class="container mt-5">
+      <div class="container mt-2">
 
           <!-- Search Results Section -->
           <div class="row mt-3">
@@ -216,13 +216,6 @@
     });
 
 
-
-
-
-
-
-
-
   $(document).ready(function () {
 
       //Delete Post
@@ -230,7 +223,7 @@
 
         var postURL = $(this).data('url');
         var trObj = $(this);
-        if(confirm("Are you sure you want to delete this post?") == true){
+        if(confirm("Are you sure, you want to delete this post?") == true){
 
               $.ajax({
                   url: postURL,
@@ -244,39 +237,6 @@
               });
         }
       });
-
-    //   // Function to load comments for a post need to remove
-    //   function loadCommentsOld(postId) {
-    //       $.ajax({
-    //           url: '/posts/' + postId + '/comments',
-    //           type: 'GET',
-    //           success: function(response) {
-    //               var comments = response.comments;
-    //               var commentsHtml = '';
-    //               if (comments.length > 0) {
-    //                   commentsHtml += '<ul>';
-    //                   comments.forEach(function(comment) {
-    //                       commentsHtml += '<li>' + comment.comment + '</li><br>';
-    //                   });
-    //                   commentsHtml += '</ul>';
-    //               } else {
-    //                   commentsHtml = 'No comments available.';
-    //               }
-    //               $('#commentsContainer').html(commentsHtml);
-    //               $('#commentsModal').modal('show');
-    //           },
-    //           error: function(xhr, status, error) {
-    //               console.error(xhr.responseText);
-    //           }
-    //       });
-    //   }
-
-    //   // Event listener for clicking on "View" comments link need to remove
-    //   $('.view-comments').click(function(e) {
-    //       e.preventDefault();
-    //       var postId = $(this).data('post-id');
-    //       loadCommentsOld(postId);
-    //   });
 
   });
   

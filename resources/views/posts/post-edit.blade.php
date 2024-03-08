@@ -61,6 +61,30 @@
           <option value="0" {{ $post->is_active == 0 ? 'selected' : '' }}>Inactive</option>
       </select>
     </div>
+    
+    @php
+      // $arrayData = json_decode($post->categories, true);
+      // $categoryIds = array_map(function($item) {
+      //                   return $item['category_master_id'];
+      //               }, $arrayData);
+      $categoryIds = array_column(json_decode($post->categories, true), 'category_master_id');
+    @endphp
+    @if(isset($categories) && $categories != '[]')
+    <div class="col-md-6 mt-3">
+      Categories
+      <div class="row">
+          @foreach ($categories as $category)
+          <div class="col">
+              <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="{{ $category->id }}" id="{{ $category->id }}" name="categories[]" {{ in_array($category->id,$categoryIds) ? 'checked' : '' }}>
+                  <label class="form-check-label" for="{{ $category->id }}">{{ $category->category }}</label>
+              </div>
+          </div>
+          @endforeach
+      </div>
+    </div>
+    @endif
+
     <div class="col-12 mt-3">
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
