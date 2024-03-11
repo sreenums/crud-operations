@@ -20,8 +20,8 @@ class SearchController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            //$posts = Post::getPostsListWithCommentsCount();
-            $posts = $this->postService->getPostsListWithCommentsCount($request);
+            
+            $posts = $this->postService->getPostsListWithCommentsCount();
 
             // Total records before filtering
             $totalRecords = $posts->count();

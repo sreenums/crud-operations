@@ -24,14 +24,4 @@ class Category extends Model
         return $this->belongsTo(CategoryMaster::class, 'category_master_id');
     }
 
-    public static function deletePostCategory($postId)
-    {
-        return static::where('post_id',$postId)->delete();
-    }
-
-    public static function createPostCategory($post)
-    {
-       // return static::where('post_id',$post)->delete();
-    }
-
 }

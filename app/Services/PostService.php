@@ -4,14 +4,18 @@ namespace App\Services;
 
 use App\Models\Category;
 use App\Repositories\PostRepository;
+use App\Repositories\CategoryRepository;
+
 
 class PostService
 {
     protected $postRepository;
+    protected $categoryRepository;
     
-    public function __construct(PostRepository $postRepository)
+    public function __construct(PostRepository $postRepository,CategoryRepository $categoryRepository)
     {
         $this->postRepository = $postRepository;
+        $this->categoryRepository = $categoryRepository;
     }
 
     /**
@@ -26,13 +30,8 @@ class PostService
         
         $post = $this->postRepository->createPost($postData);
 
-        //Save categories
-        foreach ($request->input('categories', []) as $categoryId) {
-            Category::create([
-                'post_id' => $post->id,
-                'category_master_id' => $categoryId
-            ]);
-        }
+        // Save categories
+        $this->categoryRepository->createCategory($post->id, $request->input('categories', []));
 
     }
 
@@ -44,11 +43,7 @@ class PostService
     public function getPostCreateData($request)
     {   
         
-        $imageName = null;
-        if ($request->hasFile('image')) {
-            $imageName = uniqid().'.'. $request->file('image')->extension();
-            $request->file('image')->move(public_path('images'), $imageName);
-        }
+        $imageName = $this->imageUpload($request);
 
         return [
             'title' => $request->title,
@@ -61,15 +56,29 @@ class PostService
 
     }
 
-    public function updatePost($request, $post)
+    /**
+     * Uploads an image from the request to the server.
+     *
+     * @param datatype $request description
+     * @return string
+     */
+    public function imageUpload($request)
     {
-        // image upload
-        $imageName = null;
         if ($request->hasFile('image')) {
             $imageName = uniqid().'.'. $request->file('image')->extension();
             $request->file('image')->move(public_path('images'), $imageName);
+            return $imageName;
         }
-        
+    }
+
+    /**
+     * Update post data
+     *
+     * @param $request from form data
+     * @param $post Post object
+     */
+    public function updatePost($request, $post)
+    {
         // Update post data
         $postData = [
             'title' => $request->title,
@@ -79,6 +88,8 @@ class PostService
             'is_active' => $request->checkActive,
         ];
 
+        // image upload
+        $imageName = $this->imageUpload($request);
         if (isset($imageName)) {
             $postData['image'] = $imageName;
         }
@@ -89,40 +100,43 @@ class PostService
         $newCategoryIds = $request->input('categories', []);
 
         // Delete categories that are not in the new list
-        Category::where('post_id', $post->id)
-            ->whereNotIn('category_master_id', $newCategoryIds)
-            ->delete();
+        $this->categoryRepository->deleteCategoriesNotInList($post->id, $newCategoryIds);
 
         // Save or update categories
-        foreach ($newCategoryIds as $categoryId) {
-            Category::updateOrCreate(
-                [
-                    'post_id' => $post->id,
-                    'category_master_id' => $categoryId
-                ],
-                [
-                    'post_id' => $post->id,
-                    'category_master_id' => $categoryId
-                ]
-            );
-        }
+        $this->categoryRepository->saveOrUpdateCategories($post->id, $newCategoryIds);
 
         return $post;
 
     }
 
+    /**
+     * Delete a post.
+     *
+     * @param $post The post to be deleted
+     */   
     public function deletePost($post)
     {
         return $this->postRepository->deletePost($post);
     }
 
-    public function getPostsListWithCommentsCount($request)
+    /**
+     * Get the list of posts with the count of comments for each post.
+     *
+     * @param mixed $request 
+     * @return mixed
+     */
+    public function getPostsListWithCommentsCount()
     {
-        $posts = $this->postRepository->getPostsListWithCommentsCount();
-
-        return $posts;
+        return $this->postRepository->getPostsListWithCommentsCount();
     }
 
+    /**
+     * Filter and return the posts based on the given request parameters.
+     *
+     * @param Request $request The request object containing search, author, status, commentsCount, and order parameters
+     * @param Posts $posts The collection of posts to be filtered
+     * @return Posts The filtered collection of posts
+     */
     public function FilterPost($request, $posts)
     {
 
@@ -155,7 +169,6 @@ class PostService
             $posts->having('comments_count', '=', $request->commentsCount);
         }
 
-
         // Sorting based on ID column
         if ($request->has('order')) {
             $orderColumnIndex = $request->order[0]['column'];
@@ -186,5 +199,15 @@ class PostService
             ];
         });
     }
+
+    public function deletePostCategory($postId)
+    {
+        return $this->categoryRepository->deletePostCategory($postId);
+    }
+
+    public function loadWithCategory($post)
+    {
+        return $this->postRepository->loadWithCategory($post);
+    }   
 
 }

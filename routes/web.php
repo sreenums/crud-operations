@@ -24,23 +24,25 @@ Route::get('/home', 'UserController@index')->name('user.home')->middleware(Authe
 
 Route::resource('/users', UserController::class)->middleware(Authenticate::class);
 Route::get('/view-address/{uid}',function($uid){
-    return view('addresses',['addresses' => Address::all()->where('user_id',$uid)]);
-})->middleware(Authenticate::class);
+            return view('addresses',['addresses' => Address::all()->where('user_id',$uid)]);
+        })->middleware(Authenticate::class);
 
 //Login, Logout
 Route::get('/', 'LoginController@loginForm')->name('login.index');
 Route::post('/login', 'LoginController@login');
 Route::get('/logot', 'LoginController@logout')->name('logout');
 Route::get('/dashboard', function(){
-    return view('dashboard');
-})->name('dashboard')->middleware(Authenticate::class);
+            return view('dashboard');
+        })->name('dashboard')->middleware(Authenticate::class);
 
-//For Posts
-Route::resource('/posts', PostController::class)->middleware(Authenticate::class);
+Route::middleware([Authenticate::class])->group(function () {
+    // Routes for posts resource
+    Route::resource('/posts', PostController::class);
 
-//For Comments
-Route::get('/posts/{post}/comments', 'CommentController@showComments');
-Route::post('/posts/{postId}','CommentController@addComment')->name('comment.save');
+    // Routes for comments
+    Route::get('/posts/{post}/comments', 'CommentController@showComments');
+    Route::post('/posts/{postId}','CommentController@addComment')->name('comment.save');
 
-//For posts search
-Route::get('/posts', 'SearchController@index')->name('posts.index');
+    // Route for post search
+    Route::get('/posts', 'SearchController@index')->name('posts.index');
+});

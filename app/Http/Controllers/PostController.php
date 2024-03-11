@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EditPostRequest;
 use App\Http\Requests\StorePostRequest;
-use App\Models\Category;
 use App\Models\CategoryMaster;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
-use App\Repositories\PostRepository;
 use App\Services\PostService;
 use Illuminate\Http\Request;
 
@@ -22,15 +20,22 @@ class PostController extends Controller
         $this->postService = $postService;
     }
 
-    //Show the form for creating a new post.
+    /**
+     * Show the form for creating a new post.
+     * 
+     */
     public function create()
     {
         $users = User::getList();
-        $categories = CategoryMaster::getCategories();
+        $categories = CategoryMaster::getCategoryList();
         return view('posts.add', compact('users','categories'));
     }
 
-    //Store a newly created post in storage.
+    /**
+     * Store a newly created post in storage.
+     * 
+     * @param $request form request data
+     */
     public function store(StorePostRequest $request)
     {     
         // Use PostService to create a new post
@@ -39,27 +44,40 @@ class PostController extends Controller
         return back()->withSuccess('Post added successfully!');
     }
 
-    //Display the specified post
+    /**
+     * Display the specified post
+     * 
+     * @param $post - Post object
+     */
     public function show(Post $post)
     {
-        $post->load('categories');
+        $post = $this->postService->loadWithCategory($post);
         $user = User::find($post->user_id);
         $postStatusText = $post->is_active ? '<font color="green">Active</font>' : '<font color="red">Inactive</font>';
         
         return view('posts.post-view', compact('post','user','postStatusText'));
     }
 
-    //Show the form for editing the specified post.
+    /**
+     * Show the form for editing the specified post.
+     * 
+     */
     public function edit(Post $post)
     {
-        $post->load('categories');
+        //$post->load('categories');
+        $post = $this->postService->loadWithCategory($post);
         $users = User::getList();
-        $categories = CategoryMaster::getCategories();
+        $categories = CategoryMaster::getCategoryList();
 
         return view('posts.post-edit', compact('post','users','categories'));
     }
 
-    //Update the specified post in storage.
+    /**
+     * Update the specified post in storage.
+     * 
+     * @param $request form request data
+     * @param $post - Post object
+     */
     public function update(EditPostRequest $request, Post $post)
     {
         // PostService to update the post
@@ -68,11 +86,15 @@ class PostController extends Controller
         return back()->withSuccess('Post updated successfully!');
     }
 
-    //Remove the specified post from storage
+    /**
+     * Remove the specified post from storage
+     * 
+     * @param $post - Post object
+     */
     public function destroy(Post $post)
     {
         Comment::deletePostComment($post->id);
-        Category::deletePostCategory($post->id);
+        $this->postService->deletePostCategory($post->id);
         $this->postService->deletePost($post);
 
         return response()->json(['success'=>'Post Deleted Successfully!']);

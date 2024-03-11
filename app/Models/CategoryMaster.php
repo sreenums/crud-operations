@@ -9,7 +9,7 @@ class CategoryMaster extends Model
 {
     use HasFactory;
 
-    public static function getCategories()
+    public static function getCategoryList()
     {
         return static::select('id', 'category')->distinct()->get();
     }

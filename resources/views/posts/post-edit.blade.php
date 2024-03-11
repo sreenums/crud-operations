@@ -54,21 +54,16 @@
       <label for="image" class="form-label">Update new image</label>
       <input type="file" name="image" id="image" class="form-control" accept="image/*">
     </div>
-    <div class="col-md-3 mt-3">
-      <label for="checkActive" class="form-label">Status</label>
-      <select id="checkActive" name="checkActive" class="form-select" required>
-          <option value="1" {{ $post->is_active == 1 ? 'selected' : '' }}>Active</option>
-          <option value="0" {{ $post->is_active == 0 ? 'selected' : '' }}>Inactive</option>
-      </select>
-    </div>
     
     @php
-      // $arrayData = json_decode($post->categories, true);
-      // $categoryIds = array_map(function($item) {
+      //$arrayData = json_decode($post->categories, true);
+      //var_dump($arrayData);
+      //$categoryIds = array_map(function($item) {
       //                   return $item['category_master_id'];
-      //               }, $arrayData);
+      //                }, $arrayData);
       $categoryIds = array_column(json_decode($post->categories, true), 'category_master_id');
     @endphp
+    
     @if(isset($categories) && $categories != '[]')
     <div class="col-md-6 mt-3">
       Categories
@@ -85,20 +80,19 @@
     </div>
     @endif
 
+    <div class="col-md-3 mt-3">
+      <label for="checkActive" class="form-label">Status</label>
+      <select id="checkActive" name="checkActive" class="form-select" required>
+          <option value="1" {{ $post->is_active == 1 ? 'selected' : '' }}>Active</option>
+          <option value="0" {{ $post->is_active == 0 ? 'selected' : '' }}>Inactive</option>
+      </select>
+    </div>
+
     <div class="col-12 mt-3">
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
   </form>
-
+<br>
 </div>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#checkActive').on('change', function() {
-            var selectedValue = $(this).val();
-            // Do something with the selected value, if needed
-            console.log(selectedValue);
-        });
-    });
-</script>
 
 @endsection
