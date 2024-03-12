@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Comment extends Model
+class PostCategory extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'post_id',
-        'comment',
+        'category_id',
     ];
 
     public function post()
@@ -19,14 +19,9 @@ class Comment extends Model
         return $this->belongsTo(Post::class);
     }
 
-    /**
-     * Delete a post comment by post ID.
-     *
-     * @param $postId Id corresponds to the post
-     */
-    public static function deletePostComment($postId)
+    public function category()
     {
-        return static::where('post_id',$postId)->delete();
+        return $this->belongsTo(Category::class, 'category_id');
     }
-    
+
 }

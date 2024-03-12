@@ -13,9 +13,10 @@ class CategoryTableSeeder extends Seeder
      */
     public function run(): void
     {
-        Category::create([
-            'post_id' => 3,
-            'category' => 'Category 1',
-        ]);
+        for ($i = 1; $i <= 6; $i++) {
+            Category::create([
+                'category' => 'Category ' . $i
+            ]);
+        }
     }
 }

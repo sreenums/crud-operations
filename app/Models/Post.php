@@ -36,7 +36,7 @@ class Post extends Model
 
     public function categories()
     {
-        return $this->hasMany(Category::class);
+        return $this->hasMany(PostCategory::class);
     }
 
     public function getStatusTextAttribute()

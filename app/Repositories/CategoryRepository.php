@@ -1,15 +1,14 @@
 <?php
 namespace App\Repositories;
 
-use App\Models\Category;
-
+use App\Models\PostCategory;
 class CategoryRepository
 {
     protected $model;
 
-    public function __construct(Category $category)
+    public function __construct(PostCategory $postCategory)
     {
-        $this->model = $category;
+        $this->model = $postCategory;
     }
 
     /**
@@ -18,46 +17,35 @@ class CategoryRepository
      * @param $postId - Id corresponds to the post 
      * @param $categoryIds - List of selected categories from $request.
      */
-    public function createCategory($postId, $categoryIds)
+    public function createPostCategory($postId, $categoryIds)
     {
         foreach ($categoryIds as $categoryId) {
             $this->model->create([
                 'post_id' => $postId,
-                'category_master_id' => $categoryId
+                'category_id' => $categoryId
             ]);
         }
-    }
-
-    /**
-     * Delete categories not selected during edit
-     * 
-     * @param $postId - Id corresponds to the post, 
-     * @param $newCategoryIds - Id of new categories from $request
-     */
-    public function deleteCategoriesNotInList($postId, $newCategoryIds)
-    {
-        $this->model->where('post_id', $postId)
-            ->whereNotIn('category_master_id', $newCategoryIds)
-            ->delete();
     }
 
     /**
      * Update or save Categories
      * 
      * @param $postId - Id corresponds to the post
-     * @param $newCategoryIds - array of category Ids
+     * @param $selectedCategoryIds - array of category Ids
      */
-    public function saveOrUpdateCategories($postId, $newCategoryIds)
+    public function saveOrUpdateCategories($postId, $selectedCategoryIds)
     {
-        foreach ($newCategoryIds as $categoryId) {
+        // Delete categories not selected during edit
+        $this->model->where('post_id', $postId)
+            ->whereNotIn('category_id', $selectedCategoryIds)
+            ->delete();
+
+        // Save or update categories
+        foreach ($selectedCategoryIds as $categoryId) {
             $this->model->updateOrCreate(
                 [
                     'post_id' => $postId,
-                    'category_master_id' => $categoryId
-                ],
-                [
-                    'post_id' => $postId,
-                    'category_master_id' => $categoryId
+                    'category_id' => $categoryId
                 ]
             );
         }

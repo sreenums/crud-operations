@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EditPostRequest;
 use App\Http\Requests\StorePostRequest;
-use App\Models\CategoryMaster;
-use App\Models\Comment;
+use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
 use App\Services\PostService;
@@ -27,7 +26,7 @@ class PostController extends Controller
     public function create()
     {
         $users = User::getList();
-        $categories = CategoryMaster::getCategoryList();
+        $categories = Category::getCategoryList();
         return view('posts.add', compact('users','categories'));
     }
 
@@ -51,25 +50,28 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $post = $this->postService->loadWithCategory($post);
-        $user = User::find($post->user_id);
+        $post = $this->postService->loadWithUserAndCategory($post);
         $postStatusText = $post->is_active ? '<font color="green">Active</font>' : '<font color="red">Inactive</font>';
         
-        return view('posts.post-view', compact('post','user','postStatusText'));
+        return view('posts.post-view', compact('post','postStatusText'));
     }
 
     /**
      * Show the form for editing the specified post.
      * 
+     * @param $post - Post object
      */
     public function edit(Post $post)
     {
-        //$post->load('categories');
-        $post = $this->postService->loadWithCategory($post);
-        $users = User::getList();
-        $categories = CategoryMaster::getCategoryList();
+        
+        $post = $this->postService->loadWithUserAndCategory($post);
+        $selectedCategoryIds = $post->categories->pluck('category_id');
 
-        return view('posts.post-edit', compact('post','users','categories'));
+        // Get list of authors and categories
+        $users = User::getList();
+        $categories = Category::getCategoryList();
+
+        return view('posts.post-edit', compact('post','users','categories','selectedCategoryIds'));
     }
 
     /**
@@ -93,8 +95,6 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        Comment::deletePostComment($post->id);
-        $this->postService->deletePostCategory($post->id);
         $this->postService->deletePost($post);
 
         return response()->json(['success'=>'Post Deleted Successfully!']);

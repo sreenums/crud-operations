@@ -42,6 +42,8 @@ class PostRepository
      */
     public function deletePost($post)
     {
+        $post->comments()->delete();
+        $post->categories()->delete();
         return $post->delete();
     }
 
@@ -58,8 +60,8 @@ class PostRepository
      * 
      * @param $post - Post object
      */
-    public function loadWithCategory($post)
+    public function loadWithUserAndCategory($post)
     {
-        return $post->load('categories');
+        return $post->load('categories')->load('user');
     }
 }

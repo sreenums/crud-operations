@@ -31,7 +31,7 @@ class PostService
         $post = $this->postRepository->createPost($postData);
 
         // Save categories
-        $this->categoryRepository->createCategory($post->id, $request->input('categories', []));
+        $this->categoryRepository->createPostCategory($post->id, $request->input('categories', []));
 
     }
 
@@ -97,13 +97,10 @@ class PostService
         $post = $this->postRepository->updatePost($post, $postData);
 
         // Get the list of categories from the request
-        $newCategoryIds = $request->input('categories', []);
-
-        // Delete categories that are not in the new list
-        $this->categoryRepository->deleteCategoriesNotInList($post->id, $newCategoryIds);
+        $selectedCategoryIds = $request->input('categories', []);
 
         // Save or update categories
-        $this->categoryRepository->saveOrUpdateCategories($post->id, $newCategoryIds);
+        $this->categoryRepository->saveOrUpdateCategories($post->id, $selectedCategoryIds);
 
         return $post;
 
@@ -205,9 +202,9 @@ class PostService
         return $this->categoryRepository->deletePostCategory($postId);
     }
 
-    public function loadWithCategory($post)
+    public function loadWithUserAndCategory($post)
     {
-        return $this->postRepository->loadWithCategory($post);
+        return $this->postRepository->loadWithUserAndCategory($post);
     }   
 
 }

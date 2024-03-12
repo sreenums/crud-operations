@@ -55,15 +55,6 @@
       <input type="file" name="image" id="image" class="form-control" accept="image/*">
     </div>
     
-    @php
-      //$arrayData = json_decode($post->categories, true);
-      //var_dump($arrayData);
-      //$categoryIds = array_map(function($item) {
-      //                   return $item['category_master_id'];
-      //                }, $arrayData);
-      $categoryIds = array_column(json_decode($post->categories, true), 'category_master_id');
-    @endphp
-    
     @if(isset($categories) && $categories != '[]')
     <div class="col-md-6 mt-3">
       Categories
@@ -71,7 +62,7 @@
           @foreach ($categories as $category)
           <div class="col">
               <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="{{ $category->id }}" id="{{ $category->id }}" name="categories[]" {{ in_array($category->id,$categoryIds) ? 'checked' : '' }}>
+                  <input class="form-check-input" type="checkbox" value="{{ $category->id }}" id="{{ $category->id }}" name="categories[]" {{ in_array($category->id,$selectedCategoryIds->toArray()) ? 'checked' : '' }}>
                   <label class="form-check-label" for="{{ $category->id }}">{{ $category->category }}</label>
               </div>
           </div>

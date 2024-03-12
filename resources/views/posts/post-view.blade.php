@@ -18,11 +18,11 @@
       </div>
     </p>
   @endif
-
+  
   <article>
       <h2>{{ $post->title; }}</h2>
       <p>
-          By {{ $user->name }} , &nbsp; published on {{ $post->published_at_formatted }}
+          By {{ $post->user->name }} , &nbsp; published on {{ $post->published_at_formatted }}
       </p>
       <p>
         Status : {!! $postStatusText !!}
@@ -36,12 +36,12 @@
         <img src="{{ asset('images/' . $post->image) }}" alt="User Image" class="user-image">
       </p>
       @endif
-
+      
       <p>
         Posts Category:
         <ul>
           @forelse($post->categories as $postCategory)
-            <li> {{ $postCategory->categoryMaster->category }} </li>
+            <li> {{ $postCategory->category->category }} </li>
             @empty
             <li> No Category added </li>
           @endforelse

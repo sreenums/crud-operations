@@ -9,19 +9,9 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'post_id',
-        'category_master_id',
-    ];
-
-    public function post()
+    public static function getCategoryList()
     {
-        return $this->belongsTo(Post::class);
-    }
-
-    public function categoryMaster()
-    {
-        return $this->belongsTo(CategoryMaster::class, 'category_master_id');
+        return static::select('id', 'category')->distinct()->get();
     }
 
 }
