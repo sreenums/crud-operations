@@ -64,8 +64,12 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         
-        $post = $this->postService->loadWithUserAndCategory($post);
-        $selectedCategoryIds = $post->categories->pluck('category_id');
+        $post = $this->postService->loadWithUserAndCategory($post); //dd($post->categories);
+        $selectedCategorys = $post->categories; 
+        $selectedCategoryIds = [];
+        foreach ($selectedCategorys as $category) {
+            $selectedCategoryIds[] = $category->id;
+        }
 
         // Get list of authors and categories
         $users = User::getList();

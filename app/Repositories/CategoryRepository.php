@@ -1,12 +1,13 @@
 <?php
 namespace App\Repositories;
 
-use App\Models\PostCategory;
+use App\Models\CategoryPost;
+
 class CategoryRepository
 {
     protected $model;
 
-    public function __construct(PostCategory $postCategory)
+    public function __construct(CategoryPost $postCategory)
     {
         $this->model = $postCategory;
     }
@@ -14,41 +15,26 @@ class CategoryRepository
     /**
      * Creation of categories for a post
      * 
-     * @param $postId - Id corresponds to the post 
+     * @param $post - Post object
      * @param $categoryIds - List of selected categories from $request.
      */
-    public function createPostCategory($postId, $categoryIds)
+    public function createPostCategory($post, $categoryIds)
     {
         foreach ($categoryIds as $categoryId) {
-            $this->model->create([
-                'post_id' => $postId,
-                'category_id' => $categoryId
-            ]);
+            $post->categories()->attach($categoryId);
         }
+        
     }
 
     /**
      * Update or save Categories
      * 
-     * @param $postId - Id corresponds to the post
+     * @param $post - Post object
      * @param $selectedCategoryIds - array of category Ids
      */
-    public function saveOrUpdateCategories($postId, $selectedCategoryIds)
+    public function saveOrUpdateCategories($post, $selectedCategoryIds)
     {
-        // Delete categories not selected during edit
-        $this->model->where('post_id', $postId)
-            ->whereNotIn('category_id', $selectedCategoryIds)
-            ->delete();
-
-        // Save or update categories
-        foreach ($selectedCategoryIds as $categoryId) {
-            $this->model->updateOrCreate(
-                [
-                    'post_id' => $postId,
-                    'category_id' => $categoryId
-                ]
-            );
-        }
+        $post->categories()->sync($selectedCategoryIds);
     }
 
     /**

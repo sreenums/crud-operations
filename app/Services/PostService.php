@@ -31,7 +31,7 @@ class PostService
         $post = $this->postRepository->createPost($postData);
 
         // Save categories
-        $this->categoryRepository->createPostCategory($post->id, $request->input('categories', []));
+        $this->categoryRepository->createPostCategory($post, $request->input('categories', []));
 
     }
 
@@ -100,7 +100,7 @@ class PostService
         $selectedCategoryIds = $request->input('categories', []);
 
         // Save or update categories
-        $this->categoryRepository->saveOrUpdateCategories($post->id, $selectedCategoryIds);
+        $this->categoryRepository->saveOrUpdateCategories($post, $selectedCategoryIds);
 
         return $post;
 

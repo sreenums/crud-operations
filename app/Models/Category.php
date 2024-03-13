@@ -14,4 +14,9 @@ class Category extends Model
         return static::select('id', 'category')->distinct()->get();
     }
 
+    public function posts()
+    {
+        return $this->belongsToMany(Post::class, 'category_posts');
+    }
+
 }

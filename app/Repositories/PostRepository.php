@@ -43,7 +43,7 @@ class PostRepository
     public function deletePost($post)
     {
         $post->comments()->delete();
-        $post->categories()->delete();
+        $post->category()->delete();
         return $post->delete();
     }
 
@@ -52,7 +52,7 @@ class PostRepository
      */
     public static function getPostsListWithCommentsCount()
     {
-        return Post::with(['user'])->withCount('comments');
+        return Post::with(['user:id,name'])->withCount('comments');
     }
 
     /**

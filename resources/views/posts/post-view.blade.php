@@ -41,7 +41,7 @@
         Posts Category:
         <ul>
           @forelse($post->categories as $postCategory)
-            <li> {{ $postCategory->category->category }} </li>
+            <li> {{ $postCategory->category }} </li>
             @empty
             <li> No Category added </li>
           @endforelse
