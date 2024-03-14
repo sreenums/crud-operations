@@ -43,7 +43,7 @@ class PostRepository
     public function deletePost($post)
     {
         $post->comments()->delete();
-        $post->category()->delete();
+        $post->categories()->detach();
         return $post->delete();
     }
 
